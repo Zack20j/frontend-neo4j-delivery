@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { MapIcon, AlertCircleIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import RouteForm from './RouteForm';
+import IncidentSimulator from './IncidentSimulator';
 
 interface SidebarItem {
   id: string;
@@ -30,6 +32,7 @@ export default function Sidebar() {
   return (
     <div className={`h-screen bg-gradient-to-b from-[#5DBE66] to-[#0D3B3E] text-white transition-all duration-300 ${open ? 'w-64' : 'w-16'} flex flex-col fixed top-0 left-0 z-50`}>
       <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
+        <img src="/public/GranpDelivery_Logo_Blanco.png" alt="Logo" className="w-8 h-8" />
         {open && <h2 className="text-lg font-semibold">GraphDelivery</h2>}
         <button
           onClick={() => setOpen(!open)}
@@ -51,6 +54,18 @@ export default function Sidebar() {
           </button>
         ))}
       </nav>
+
+      {open && activeItem === 'route' && (
+        <div className="px-4 py-2 overflow-y-auto max-h-96 border-t border-white/10">
+          <RouteForm />
+        </div>
+      )}
+
+      {open && activeItem === 'incident' && (
+        <div className="px-4 py-2 overflow-y-auto max-h-96 border-t border-white/10">
+          <IncidentSimulator />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,22 +1,25 @@
 // src/components/IncidentSimulator.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { AlertTriangleIcon } from 'lucide-react';
+import { Incident } from '../models/ConnectionModel';
+import { getConnections } from '../services/getConnections';
 
-interface Incident {
-  from: string;
-  to: string;
-  status: 'abierta' | 'cerrada';
-}
-
-const mockConnections = [
-  { from: 'CD1', to: 'Z1' },
-  { from: 'Z1', to: 'Z2' },
-  { from: 'Z2', to: 'Z3' },
-  { from: 'Z3', to: 'CD1' },
-];
 
 export default function IncidentSimulator() {
+  const [connections, setConnections] = useState<Incident[]>([])
   const [incident, setIncident] = useState<Incident | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    ( async () => {
+      try {
+        const data = await getConnections()
+        setConnections(data);
+      } catch (error) {
+        console.error('Error fetching connections:', error);
+      }
+    })()
+  }, [])
 
   const handleClose = () => {
     setIncident((prev) =>
@@ -33,11 +36,16 @@ export default function IncidentSimulator() {
   };
 
   return (
-    <div className="bg-white p-4 shadow rounded mb-6">
-      <h2 className="text-lg font-semibold mb-2">Simular Incidente</h2>
-      <div className="flex flex-col md:flex-row gap-4 mb-4">
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 text-white text-sm font-semibold">
+        <AlertTriangleIcon size={18} />
+        <span>Simular Incidente</span>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <label className="text-white text-xs font-medium">Conexión:</label>
         <select
-          className="border p-2 rounded"
+          className="p-2 rounded bg-white text-sm text-black focus:outline-none"
           onChange={(e) => {
             const [from, to] = e.target.value.split('|');
             setIncident({ from, to, status: 'abierta' });
@@ -45,37 +53,39 @@ export default function IncidentSimulator() {
           }}
         >
           <option value="">Selecciona una conexión</option>
-          {mockConnections.map((conn, idx) => (
+          {connections.map((conn, idx) => (
             <option key={idx} value={`${conn.from}|${conn.to}`}>
               {conn.from} → {conn.to}
             </option>
           ))}
         </select>
 
-        <button
-          onClick={handleClose}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Cerrar Conexión
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleClose}
+            className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded text-sm font-semibold transition-colors"
+          >
+            Cerrar
+          </button>
 
-        <button
-          onClick={handleOpen}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Reabrir Conexión
-        </button>
+          <button
+            onClick={handleOpen}
+            className="w-1/2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded text-sm font-semibold transition-colors"
+          >
+            Reabrir
+          </button>
+        </div>
       </div>
 
       {incident && (
-        <div className="bg-yellow-100 p-4 rounded">
+        <div className="bg-white/20 text-white text-sm p-3 rounded border border-white/30 mt-4 animate-fade-in">
           <p>
             <strong>Conexión:</strong> {incident.from} → {incident.to}
           </p>
           <p>
             <strong>Estado:</strong> {incident.status}
           </p>
-          {statusMessage && <p className="mt-2 text-sm">{statusMessage}</p>}
+          {statusMessage && <p className="mt-2 text-sm italic">{statusMessage}</p>}
         </div>
       )}
     </div>

@@ -1,5 +1,6 @@
 // src/components/RouteForm.tsx
 import React, { useState } from 'react';
+import { SearchIcon } from 'lucide-react';
 
 interface RouteResult {
   path: string[];
@@ -24,18 +25,22 @@ export default function RouteForm() {
   const [result, setResult] = useState<RouteResult | null>(null);
 
   const handleSearch = () => {
-    // Simulamos una llamada API
     setTimeout(() => {
       setResult(mockRouteResult);
     }, 500);
   };
 
   return (
-    <div className="bg-white p-4 shadow rounded mb-6">
-      <h2 className="text-lg font-semibold mb-2">Buscar Ruta Más Rápida</h2>
-      <div className="flex flex-col md:flex-row gap-4 mb-4">
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 text-white text-sm font-semibold">
+        <SearchIcon size={18} />
+        <span>Buscar Ruta Más Rápida</span>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <label className="text-white text-xs  font-medium">Origen:</label>
         <select
-          className="border p-2 rounded"
+          className="p-2 rounded bg-white text-sm text-black focus:outline-none"
           value={from}
           onChange={(e) => setFrom(e.target.value)}
         >
@@ -46,8 +51,9 @@ export default function RouteForm() {
           ))}
         </select>
 
+        <label className="text-white text-xs font-medium mt-2">Destino:</label>
         <select
-          className="border p-2 rounded"
+          className="p-2 rounded bg-white text-sm text-black focus:outline-none"
           value={to}
           onChange={(e) => setTo(e.target.value)}
         >
@@ -60,14 +66,14 @@ export default function RouteForm() {
 
         <button
           onClick={handleSearch}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="mt-4 w-full bg-[#0D3B3E] hover:bg-[#0b2f32] text-white py-2 px-4 rounded text-sm font-semibold transition-colors"
         >
-          Buscar
+          Calcular Ruta
         </button>
       </div>
 
       {result && (
-        <div className="bg-green-100 p-4 rounded">
+        <div className="bg-white/20 text-white text-sm p-3 rounded border border-white/30 mt-4 animate-fade-in">
           <p>
             <strong>Ruta:</strong> {result.path.join(' → ')}
           </p>
