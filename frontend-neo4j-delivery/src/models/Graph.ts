@@ -2,7 +2,9 @@
 export interface Node {
   id: string;
   name: string;
-  label: 'Zona' | 'CentroDistribucion';
+  label: string;
+  x?: number; 
+  y?: number;
 }
 
 export interface Link {

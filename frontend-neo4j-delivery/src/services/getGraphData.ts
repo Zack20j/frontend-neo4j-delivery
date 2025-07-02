@@ -15,6 +15,27 @@ const mockGraphData: GraphData = {
   ],
 };
 
+export async function getGraphData(): Promise<GraphData> {
+    try {
+        const response = await fetch('http://localhost:8080/api/graph', {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors', // Asegúrate de incluir esto
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching graph data:', error);
+        throw error;
+    }
+}
+
+/*
 export const getGraphData = async (): Promise<GraphData> => {
     return mockGraphData
 }
+*/
